@@ -1,3 +1,4 @@
+import SideBar from "../features/components/SideBar";
 import "./globals.css";
 
 export default function RootLayout({
@@ -7,8 +8,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={"flex-1 flex-row flex overflow-hidden"}>
-        <div className="bg-red-50 w-5xl h-screen overflow-y-auto"></div>
+      <body className={"flex flex-1 flex-row overflow-hidden"}>
+        <SideBar />
         <div className="flex-1">{children}</div>
       </body>
     </html>
