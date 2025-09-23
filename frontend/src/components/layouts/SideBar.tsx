@@ -3,6 +3,7 @@
 import { HomeIcon, LayoutList, LucideProps } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import IacText from "../ui/IacText";
 
 type Routes = "/home" | "/invoices";
 
@@ -25,7 +26,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex h-screen flex-col gap-6 overflow-y-auto border-r bg-red-50 px-6 py-6">
+    <div className="flex h-screen flex-col gap-6 overflow-y-auto border-r px-6 py-6">
       {sideBarItems.map((item) => (
         <button
           key={item.name}
@@ -35,7 +36,7 @@ const SideBar = () => {
           <div>
             <item.icon size={24} />
           </div>
-          {item.name}
+          <IacText text={item.name} size="base" weight="medium" />
         </button>
       ))}
     </div>
