@@ -25,7 +25,7 @@ const invoiceImportSchema = z
       }),
     ),
   })
-  .pipe(invoiceFormSchema);
+  .transform((data) => invoiceFormSchema.parse(data));
 
 export function ImportFromJsonButton({
   form,

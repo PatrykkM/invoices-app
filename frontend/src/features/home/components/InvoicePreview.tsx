@@ -1,5 +1,8 @@
 import React from "react";
 import IacText, { IacTextColor } from "@/src/components/ui/IacText";
+import { useFormContext, useWatch } from "react-hook-form";
+import { InvoiceFormValues } from "../schemas/invoiceForm";
+import { format } from "date-fns";
 
 type InvoiceSummary = {
   invoiceNo: string;
@@ -17,15 +20,16 @@ type InvoicePreviewProps = {
 const DEFAULT_COLUMNS = ["Item", "Qty", "Amount"];
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({
-  summary = {
-    invoiceNo: "21312312312",
-    buyerName: "John Doe",
-    invoiceDate: "01/01/2023",
-    dueDate: "01/01/2023",
-  },
   lineItems = [["Item 3", "1", "$10.00"]],
   columns = DEFAULT_COLUMNS,
 }) => {
+  const { control } = useFormContext<InvoiceFormValues>();
+  const { buyer, dueDate, invoiceNumber, issueDate, items } = useWatch({
+    control,
+  });
+
+  console.log(items);
+
   return (
     <div className="flex flex-1 flex-col gap-6 bg-accent100 p-12">
       <IacText
@@ -34,7 +38,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         weight="bold"
         color="base1000"
       />
-
       <div className="flex flex-col gap-12 overflow-hidden rounded-lg bg-white p-12 shadow-sm">
         <div className="flex flex-col">
           <IacText
@@ -44,7 +47,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             weight="medium"
           />
           <IacText
-            text={summary.invoiceNo}
+            text={invoiceNumber ?? ""}
             color="accent200"
             weight="bold"
             size="sm"
@@ -57,16 +60,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         </div>
 
         <div className="flex flex-row flex-wrap justify-between gap-2">
-          <LabeledValue label="Invoice No." value={summary.invoiceNo} />
-          <LabeledValue label="Buyer name" value={summary.buyerName} />
+          <LabeledValue label="NIP" value={buyer?.NIP ?? ""} />
+          <LabeledValue label="Buyer name" value={buyer?.name ?? ""} />
           <div className="flex flex-col">
             <IacText
-              text={`Invoice date ${summary.invoiceDate}`}
+              text={`Invoice date ${
+                issueDate ? format(issueDate, "dd-MM-yyyy") : "---"
+              }`}
               size="sm"
               weight="medium"
             />
             <IacText
-              text={`Due date ${summary.dueDate}`}
+              text={`Due date ${dueDate ? format(dueDate, "dd-MM-yyyy") : "---"}`}
               size="sm"
               weight="medium"
             />
@@ -75,8 +80,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col overflow-hidden rounded-lg border border-base200">
             <SingleRow items={columns} isHeader />
-            {lineItems.map((row, idx) => (
-              <SingleRow key={idx} items={padTo(row, columns.length)} />
+            {items?.map((item, idx) => (
+              <SingleRow
+                key={idx}
+                items={[
+                  item.description ?? "",
+                  String(item.quantity),
+                  String(item.netPrice),
+                ]}
+              />
             ))}
           </div>
           <InvoiceTotals subtotal="$100" tax="$23" total="$123" />
@@ -94,7 +106,7 @@ const LabeledValue: React.FC<{ label: string; value: string }> = ({
 }) => (
   <div className="flex flex-col">
     <IacText text={label} size="sm" weight="bold" />
-    <IacText text={value} color="accent200" weight="bold" size="sm" />
+    <IacText text={value} color="accent200" weight="bold" size="sm" truncate />
   </div>
 );
 
@@ -127,11 +139,6 @@ const singleRowStyles = (
   isHeader
     ? { text: "base100", background: "bg-accent200" }
     : { text: "base1000", background: "bg-white" };
-
-const padTo = <T,>(arr: T[], len: number, fill: T | "" = "" as T): T[] => {
-  if (arr.length >= len) return arr.slice(0, len);
-  return [...arr, ...Array(len - arr.length).fill(fill)];
-};
 
 type InvoiceTotalsProps = {
   subtotal: string;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/src/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import {
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
 import { DatePicker } from "@/src/components/ui/datePicker";
-import { invoiceFormSchema, InvoiceFormValues } from "../schemas/invoiceForm";
+import { InvoiceFormValues } from "../schemas/invoiceForm";
 import {
   invoiceDateFields,
   invoiceTextFields,
@@ -24,32 +23,33 @@ import { PlusIcon } from "lucide-react";
 import { colors } from "@/src/theme/colors";
 import { ImportFromJsonButton } from "./ImportFromJsonButton";
 
-export function InvoiceForm() {
-  const form = useForm<InvoiceFormValues>({
-    resolver: zodResolver(invoiceFormSchema),
-    defaultValues: {
-      invoiceNumber: "",
-      issueDate: undefined,
-      dueDate: undefined,
-      buyer: { name: "", NIP: "" },
-      items: [{ description: "", quantity: 1, netPrice: 0 }],
-    },
-  });
+const defaultValues: InvoiceFormValues = {
+  invoiceNumber: "",
+  issueDate: undefined,
+  dueDate: undefined,
+  buyer: { name: "", NIP: "" },
+  items: [{ description: "", quantity: 1, netPrice: 0 }],
+};
 
+export function InvoiceForm({
+  invoiceForm,
+}: {
+  invoiceForm: ReturnType<typeof useForm<InvoiceFormValues>>;
+}) {
   const { fields, append, remove } = useFieldArray({
-    control: form.control,
+    control: invoiceForm.control,
     name: "items",
   });
 
   return (
     <div className="flex-1 border-r border-base200 p-6">
-      <Form {...form}>
+      <Form {...invoiceForm}>
         <form className="flex flex-col gap-6">
           <div className="flex flex-row gap-4">
             {invoiceTextFields.map((field) => (
               <FormField
                 key={field.name}
-                control={form.control}
+                control={invoiceForm.control}
                 name={field.name}
                 render={({ field: rhfField }) => (
                   <FormItem className="flex flex-col">
@@ -68,7 +68,7 @@ export function InvoiceForm() {
             {invoiceDateFields.map((field) => (
               <FormField
                 key={field.name}
-                control={form.control}
+                control={invoiceForm.control}
                 name={field.name}
                 render={({ field: rhfField }) => (
                   <FormItem className="flex w-full max-w-[290px] flex-col">
@@ -99,7 +99,7 @@ export function InvoiceForm() {
             {fields.map((fieldItem, index) => (
               <div key={fieldItem.id} className="flex gap-4">
                 <FormField
-                  control={form.control}
+                  control={invoiceForm.control}
                   name={`items.${index}.description`}
                   render={({ field }) => (
                     <FormItem className="flex flex-[2] flex-col">
@@ -116,7 +116,7 @@ export function InvoiceForm() {
                 />
 
                 <FormField
-                  control={form.control}
+                  control={invoiceForm.control}
                   name={`items.${index}.quantity`}
                   render={({ field }) => (
                     <FormItem className="flex flex-1 flex-col">
@@ -126,9 +126,7 @@ export function InvoiceForm() {
                           min={1}
                           step={1}
                           value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
+                          onChange={field.onChange}
                           className="border-base300"
                         />
                       </FormControl>
@@ -138,7 +136,7 @@ export function InvoiceForm() {
                 />
 
                 <FormField
-                  control={form.control}
+                  control={invoiceForm.control}
                   name={`items.${index}.netPrice`}
                   render={({ field }) => (
                     <FormItem className="flex flex-1 flex-col">
@@ -148,9 +146,7 @@ export function InvoiceForm() {
                           min={0}
                           step="0.01"
                           value={field.value ?? ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
+                          onChange={field.onChange}
                           className="border-base300"
                         />
                       </FormControl>
@@ -189,14 +185,14 @@ export function InvoiceForm() {
             )}
           </div>
           <div className="flex justify-between">
-            <ImportFromJsonButton form={form} />
+            <ImportFromJsonButton form={invoiceForm} />
             <div className="flex gap-2">
               <Button
                 type="button"
                 variant={"outline"}
                 size={"lg"}
                 className="self-start font-bold"
-                onClick={() => form.reset()}
+                onClick={() => invoiceForm.reset(defaultValues)}
               >
                 Reset
               </Button>
@@ -206,7 +202,7 @@ export function InvoiceForm() {
                 variant={"accent"}
                 size={"lg"}
                 className="self-start font-bold"
-                onClick={() => form.handleSubmit(() => {})()}
+                onClick={() => invoiceForm.handleSubmit(() => {})()}
               >
                 Save
               </Button>

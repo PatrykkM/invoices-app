@@ -4,17 +4,19 @@ export const invoiceFormSchema = z.object({
   invoiceNumber: z.string().min(2, {
     message: "Invoice number must be at least 2 characters.",
   }),
+
   issueDate: z
-    .date()
-    .refine((d) => !Number.isNaN(d.getTime()), { message: "Invalid date" })
-    .refine((d) => d <= new Date(), {
-      message: "Date cannot be in the future",
+    .union([z.date(), z.undefined()])
+    .refine((d) => d !== undefined, { message: "Invoice date is required" })
+    .refine((d) => d === undefined || !Number.isNaN(d.getTime()), {
+      message: "Invalid issue date",
     }),
+
   dueDate: z
-    .date()
-    .refine((d) => !Number.isNaN(d.getTime()), { message: "Invalid date" })
-    .refine((d) => d <= new Date(), {
-      message: "Date cannot be in the future",
+    .union([z.date(), z.undefined()])
+    .refine((d) => d !== undefined, { message: "Due date is required" })
+    .refine((d) => d === undefined || !Number.isNaN(d.getTime()), {
+      message: "Invalid due date",
     }),
   buyer: z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
