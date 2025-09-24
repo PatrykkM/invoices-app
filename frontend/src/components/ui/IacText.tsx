@@ -15,19 +15,36 @@ const textWeight = {
   bold: "font-bold",
 };
 
+const textColor = {
+  base100: "text-base1000",
+  base300: "text-base300",
+  base400: "text-base400",
+  accent200: "text-accent200",
+  base1000: "text-base1000",
+};
+
 const IacText = ({
   text,
   size = "base",
   weight = "normal",
+  color = "base1000",
+  className,
   ...props
 }: {
   text: string;
   size?: keyof typeof textSize;
   weight?: keyof typeof textWeight;
+  className?: string;
+  color?: keyof typeof textColor;
 }) => {
   return (
     <p
-      className={clsx(textSize[size], textWeight[weight], "text-base1000")}
+      className={clsx(
+        textSize[size],
+        textWeight[weight],
+        textColor[color],
+        className,
+      )}
       {...props}
     >
       {text}

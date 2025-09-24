@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunito.variable}>
-      <body className={`flex flex-1 flex-row overflow-hidden`}>
+      <body className={`flex flex-1 flex-row`}>
         <SideBar />
         <div className="flex-1">{children}</div>
       </body>

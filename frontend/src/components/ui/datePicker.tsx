@@ -30,7 +30,7 @@ export function DatePicker({
         <Button
           variant="outline"
           data-empty={!date}
-          className={`data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal ${className ?? ""}`}
+          className={`data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal ${className ?? ""}`}
         >
           <CalendarIcon />
           {date ? format(date, "PPP") : <span>{placeholder}</span>}
