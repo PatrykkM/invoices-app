@@ -103,7 +103,11 @@ export function InvoiceForm() {
                   render={({ field }) => (
                     <FormItem className="flex flex-[2] flex-col">
                       <FormControl>
-                        <Input placeholder="Item description" {...field} />
+                        <Input
+                          placeholder="Item description"
+                          className="border-base300"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -124,6 +128,7 @@ export function InvoiceForm() {
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
+                          className="border-base300"
                         />
                       </FormControl>
                       <FormMessage />
@@ -145,6 +150,7 @@ export function InvoiceForm() {
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber)
                           }
+                          className="border-base300"
                         />
                       </FormControl>
                       <FormMessage />
