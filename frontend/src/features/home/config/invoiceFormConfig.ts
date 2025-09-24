@@ -9,6 +9,6 @@ export const invoiceTextFields = [
 ] as const;
 
 export const invoiceDateFields = [
-  { name: "invoiceDate", label: "Invoice Date" },
+  { name: "issueDate", label: "Invoice Date" },
   { name: "dueDate", label: "Due Date" },
 ] as const;

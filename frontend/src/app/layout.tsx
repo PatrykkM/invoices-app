@@ -1,6 +1,7 @@
 import SideBar from "../components/layouts/SideBar";
 import "@/src/theme/globals.css";
 import { Nunito } from "next/font/google";
+import { Toaster } from "../components/ui/sonner";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -18,7 +19,8 @@ export default function RootLayout({
     <html lang="en" className={nunito.variable}>
       <body className={`flex flex-1 flex-row`}>
         <SideBar />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1">{children}</div>\
+        <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );

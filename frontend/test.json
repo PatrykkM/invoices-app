@@ -1,0 +1,17 @@
+{
+  "invoiceNumber": "FV/2025/01/01",
+  "issueDate": "2025-01-10",
+  "dueDate": "2025-01-25",
+  "buyer": {
+    "name": "ABC Sp. z o.o.",
+    "NIP": "123456789"
+  },
+  "items": [
+    {
+      "description": "Licencja oprogramowania",
+      "quantity": 2,
+      "netPrice": 500
+    },
+    { "description": "Usługa wdrożeniowa", "quantity": 1, "netPrice": 1500 }
+  ]
+}

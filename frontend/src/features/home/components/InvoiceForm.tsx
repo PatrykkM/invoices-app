@@ -22,16 +22,17 @@ import {
 import IacText from "@/src/components/ui/IacText";
 import { PlusIcon } from "lucide-react";
 import { colors } from "@/src/theme/colors";
+import { ImportFromJsonButton } from "./ImportFromJsonButton";
 
 export function InvoiceForm() {
   const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
     defaultValues: {
       invoiceNumber: "",
-      invoiceDate: new Date(),
-      dueDate: new Date(),
+      issueDate: undefined,
+      dueDate: undefined,
       buyer: { name: "", NIP: "" },
-      items: [{ description: "", quantity: 1, netPrice: 0.01 }],
+      items: [{ description: "", quantity: 1, netPrice: 0 }],
     },
   });
 
@@ -41,7 +42,7 @@ export function InvoiceForm() {
   });
 
   return (
-    <div className="border-base200 flex-1 border-r p-6">
+    <div className="flex-1 border-r border-base200 p-6">
       <Form {...form}>
         <form className="flex flex-col gap-6">
           <div className="flex flex-row gap-4">
@@ -84,7 +85,7 @@ export function InvoiceForm() {
               />
             ))}
           </div>
-          <div className="bg-base50 flex flex-col gap-2 rounded-xl px-6 pt-6">
+          <div className="flex flex-col gap-2 rounded-xl bg-base50 px-6 pt-6">
             <div className="flex flex-row items-center gap-4">
               <IacText
                 className="flex-[2]"
@@ -162,7 +163,7 @@ export function InvoiceForm() {
                   type="button"
                   variant="destructive"
                   onClick={() => remove(index)}
-                  className="w-[90px]"
+                  className="w-[90px] font-bold"
                 >
                   Remove
                 </Button>
@@ -172,9 +173,9 @@ export function InvoiceForm() {
               <button
                 type="button"
                 onClick={() =>
-                  append({ description: "", quantity: 1, netPrice: 100 })
+                  append({ description: "", quantity: 1, netPrice: 0 })
                 }
-                className="bg-accent200 hover:bg-accent200/80 flex items-center justify-center self-center rounded-full p-3 transition"
+                className="flex items-center justify-center self-center rounded-full bg-accent200 p-3 transition hover:bg-accent200/80"
               >
                 <PlusIcon color={colors.base0} size={20} />
               </button>
@@ -182,13 +183,35 @@ export function InvoiceForm() {
             </div>
 
             {fields.length === 0 && (
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-muted-foreground">
                 No items yet. Click add item to start.
               </p>
             )}
           </div>
+          <div className="flex justify-between">
+            <ImportFromJsonButton form={form} />
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={"outline"}
+                size={"lg"}
+                className="self-start font-bold"
+                onClick={() => form.reset()}
+              >
+                Reset
+              </Button>
 
-          <Button type="submit">Submit</Button>
+              <Button
+                type="button"
+                variant={"accent"}
+                size={"lg"}
+                className="self-start font-bold"
+                onClick={() => form.handleSubmit(() => {})()}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
         </form>
       </Form>
     </div>

@@ -4,7 +4,7 @@ export const invoiceFormSchema = z.object({
   invoiceNumber: z.string().min(2, {
     message: "Invoice number must be at least 2 characters.",
   }),
-  invoiceDate: z
+  issueDate: z
     .date()
     .refine((d) => !Number.isNaN(d.getTime()), { message: "Invalid date" })
     .refine((d) => d <= new Date(), {
@@ -18,7 +18,7 @@ export const invoiceFormSchema = z.object({
     }),
   buyer: z.object({
     name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-    NIP: z.string().min(10, { message: "NIP must be at least 10 characters." }),
+    NIP: z.string().min(8, { message: "NIP must be at least 8 characters." }),
   }),
   items: z
     .array(
