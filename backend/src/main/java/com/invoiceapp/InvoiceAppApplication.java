@@ -1,13 +1,13 @@
-package com.github.PatrykkM.invoice_api;
+package com.invoiceapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class InvoiceApiApplication {
+public class InvoiceAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(InvoiceApiApplication.class, args);
+		SpringApplication.run(InvoiceAppApplication.class, args);
 	}
 
 }
