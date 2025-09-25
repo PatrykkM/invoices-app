@@ -26,7 +26,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex h-screen flex-col gap-6 overflow-y-auto border-r px-6 py-6">
+    <div className="flex h-screen flex-col gap-6 overflow-y-auto border-r p-6">
       {sideBarItems.map((item) => (
         <button
           key={item.name}
@@ -36,7 +36,7 @@ const SideBar = () => {
           <div>
             <item.icon size={24} />
           </div>
-          <IacText text={item.name} size="base" weight="medium" />
+          <IacText text={item.name} size="xs" weight="bold" />
         </button>
       ))}
     </div>

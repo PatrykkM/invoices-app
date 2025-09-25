@@ -1,8 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-import { keyof } from "zod";
 
 const textSize = {
+  xs: "text-xs",
   sm: "text-sm",
   base: "text-base",
   lg: "text-lg",
@@ -51,10 +51,10 @@ const IacText = ({
         textSize[size],
         textWeight[weight],
         textColor[color],
+        truncate && "truncate",
         className,
       )}
       {...props}
-      style={truncate ? { textOverflow: "ellipsis", overflow: "hidden" } : {}}
     >
       {text}
     </p>

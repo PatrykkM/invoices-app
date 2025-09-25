@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import IacText, { IacTextColor } from "@/src/components/ui/IacText";
 import { useFormContext, useWatch } from "react-hook-form";
 import { InvoiceFormValues } from "../schemas/invoiceForm";
 import { format } from "date-fns";
+import { InvoicePreviewRow } from "./InvoicePreviewRow";
+import { InvoicePreviewTotal } from "./InvoicePreviewTotal";
+import { InvoicePreviewTable } from "./InvoicePreviewTable";
 
 type InvoiceSummary = {
   invoiceNo: string;
@@ -17,18 +20,27 @@ type InvoicePreviewProps = {
   columns?: string[];
 };
 
-const DEFAULT_COLUMNS = ["Item", "Qty", "Amount"];
+const DEFAULT_COLUMNS = ["Item", "Qty", "Price"];
 
-const InvoicePreview: React.FC<InvoicePreviewProps> = ({
-  lineItems = [["Item 3", "1", "$10.00"]],
-  columns = DEFAULT_COLUMNS,
-}) => {
+const InvoicePreview: React.FC<InvoicePreviewProps> = () => {
   const { control } = useFormContext<InvoiceFormValues>();
   const { buyer, dueDate, invoiceNumber, issueDate, items } = useWatch({
     control,
   });
 
-  console.log(items);
+  const totalPrice = useMemo(() => {
+    if (!items) return 0;
+    return items.reduce((acc, item) => {
+      console.log(acc);
+      const net = item.netPrice ?? 0;
+      const qty = item.quantity ?? 0;
+      return acc + net * qty;
+    }, 0);
+  }, [items]);
+
+  const tax = useMemo(() => {
+    return totalPrice * 0.23;
+  }, [totalPrice]);
 
   return (
     <div className="flex flex-1 flex-col gap-6 bg-accent100 p-12">
@@ -51,6 +63,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             color="accent200"
             weight="bold"
             size="sm"
+            className="[overflow-wrap:anywhere]"
           />
         </div>
 
@@ -59,7 +72,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           <div className="h-[2px] w-full bg-base200" />
         </div>
 
-        <div className="flex flex-row flex-wrap justify-between gap-2">
+        <div className="flex flex-1 flex-row flex-wrap justify-between gap-2">
           <LabeledValue label="NIP" value={buyer?.NIP ?? ""} />
           <LabeledValue label="Buyer name" value={buyer?.name ?? ""} />
           <div className="flex flex-col">
@@ -78,20 +91,13 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col overflow-hidden rounded-lg border border-base200">
-            <SingleRow items={columns} isHeader />
-            {items?.map((item, idx) => (
-              <SingleRow
-                key={idx}
-                items={[
-                  item.description ?? "",
-                  String(item.quantity),
-                  String(item.netPrice),
-                ]}
-              />
-            ))}
-          </div>
-          <InvoiceTotals subtotal="$100" tax="$23" total="$123" />
+          <InvoicePreviewTable items={items} />
+
+          <InvoicePreviewTotal
+            subtotal={`$${totalPrice.toFixed(2)}`}
+            tax={`$${tax.toFixed(2)}`}
+            total={`$${(totalPrice + tax).toFixed(2)}`}
+          />
         </div>
       </div>
     </div>
@@ -106,74 +112,12 @@ const LabeledValue: React.FC<{ label: string; value: string }> = ({
 }) => (
   <div className="flex flex-col">
     <IacText text={label} size="sm" weight="bold" />
-    <IacText text={value} color="accent200" weight="bold" size="sm" truncate />
+    <IacText
+      text={value}
+      color="accent200"
+      weight="bold"
+      size="sm"
+      className="[overflow-wrap:anywhere]"
+    />
   </div>
 );
-
-const SingleRow: React.FC<{ items: string[]; isHeader?: boolean }> = ({
-  items,
-  isHeader,
-}) => {
-  const styles = singleRowStyles(isHeader);
-  return (
-    <div
-      className={`flex flex-row justify-between gap-2 p-4 ${styles.background}`}
-    >
-      {items.map((text, index) => (
-        <IacText
-          key={`${text}-${index}`}
-          text={text}
-          size="sm"
-          color={styles.text}
-          className={`${index === 0 ? "flex-[3]" : "flex-1"} truncate`}
-          weight={isHeader ? "bold" : "medium"}
-        />
-      ))}
-    </div>
-  );
-};
-
-const singleRowStyles = (
-  isHeader?: boolean,
-): { text: IacTextColor; background: string } =>
-  isHeader
-    ? { text: "base100", background: "bg-accent200" }
-    : { text: "base1000", background: "bg-white" };
-
-type InvoiceTotalsProps = {
-  subtotal: string;
-  tax: string;
-  total: string;
-};
-
-const InvoiceTotals: React.FC<InvoiceTotalsProps> = ({
-  subtotal,
-  tax,
-  total,
-}) => {
-  return (
-    <div className="flex w-72 flex-col gap-2 self-end">
-      <div className="flex w-full flex-row justify-between gap-2">
-        <IacText text="SubTotal " size="sm" color="base400" weight="bold" />
-        <IacText text={subtotal} size="sm" color="base1000" weight="bold" />
-      </div>
-
-      <div className="flex w-full flex-row justify-between gap-2">
-        <IacText text="Tax" size="sm" color="base400" weight="bold" />
-        <IacText text={tax} size="sm" color="base1000" weight="bold" />
-      </div>
-      <div className="border-t border-t-base200 pt-2">
-        <div className="mt-1 flex w-full flex-row items-center justify-between gap-2">
-          <IacText text="Invoice Total" color="base1000" weight="bold" />
-          <IacText
-            text={total + 12341}
-            size="2xl"
-            color="accent200"
-            weight="bold"
-            truncate
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
