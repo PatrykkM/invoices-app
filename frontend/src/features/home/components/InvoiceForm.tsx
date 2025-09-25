@@ -22,6 +22,7 @@ import IacText from "@/src/components/ui/IacText";
 import { PlusIcon } from "lucide-react";
 import { colors } from "@/src/theme/colors";
 import { ImportFromJsonButton } from "./ImportFromJsonButton";
+import { cn } from "@/src/lib/utils";
 
 const defaultValues: InvoiceFormValues = {
   invoiceNumber: "",
@@ -45,7 +46,7 @@ export function InvoiceForm({
     <div className="flex-1 border-r border-base200 p-6">
       <Form {...invoiceForm}>
         <form className="flex flex-col gap-6">
-          <div className="flex flex-row gap-4">
+          <FormRow>
             {invoiceTextFields.map((field) => (
               <FormField
                 key={field.name}
@@ -62,9 +63,8 @@ export function InvoiceForm({
                 )}
               />
             ))}
-          </div>
-
-          <div className="flex flex-row gap-4">
+          </FormRow>
+          <FormRow>
             {invoiceDateFields.map((field) => (
               <FormField
                 key={field.name}
@@ -84,16 +84,28 @@ export function InvoiceForm({
                 )}
               />
             ))}
-          </div>
+          </FormRow>
+
           <div className="flex flex-col gap-2 rounded-xl bg-base50 px-6 pt-6">
             <div className="flex flex-row items-center gap-4">
               <IacText
                 className="flex-[2]"
                 text="Description"
                 color="base400"
+                size="sm"
               />
-              <IacText className="flex-1" text="Qty" color="base400" />
-              <IacText className="flex-1" text="Net price" color="base400" />
+              <IacText
+                className="flex-1"
+                text="Qty"
+                color="base400"
+                size="sm"
+              />
+              <IacText
+                className="flex-1"
+                text="Net price"
+                color="base400"
+                size="sm"
+              />
               <div className="w-[90px]" />
             </div>
             {fields.map((fieldItem, index) => (
@@ -165,17 +177,22 @@ export function InvoiceForm({
                 </Button>
               </div>
             ))}
-            <div className="flex flex-col items-center gap-2 pb-2 pt-4">
+            <div className="flex flex-col items-center gap-1 pb-2 pt-4">
               <button
                 type="button"
                 onClick={() =>
                   append({ description: "", quantity: 1, netPrice: 0 })
                 }
-                className="flex items-center justify-center self-center rounded-full bg-accent200 p-3 transition hover:bg-accent200/80"
+                className="flex items-center justify-center self-center rounded-full bg-accent200 p-2 transition hover:bg-accent200/80"
               >
                 <PlusIcon color={colors.base0} size={20} />
               </button>
-              <IacText text="Add Item" weight="bold" color="accent200" />
+              <IacText
+                text="Add Item"
+                weight="bold"
+                color="accent200"
+                size="sm"
+              />
             </div>
 
             {fields.length === 0 && (
@@ -184,6 +201,7 @@ export function InvoiceForm({
               </p>
             )}
           </div>
+
           <div className="flex justify-between">
             <ImportFromJsonButton form={invoiceForm} />
             <div className="flex gap-2">
@@ -210,6 +228,16 @@ export function InvoiceForm({
           </div>
         </form>
       </Form>
+    </div>
+  );
+}
+
+type FormRowProps = React.HTMLAttributes<HTMLDivElement>;
+
+export function FormRow({ className, children, ...props }: FormRowProps) {
+  return (
+    <div className={cn("flex flex-row gap-4", className)} {...props}>
+      {children}
     </div>
   );
 }

@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
-import IacText, { IacTextColor } from "@/src/components/ui/IacText";
+import IacText from "@/src/components/ui/IacText";
 import { useFormContext, useWatch } from "react-hook-form";
 import { InvoiceFormValues } from "../schemas/invoiceForm";
 import { format } from "date-fns";
-import { InvoicePreviewRow } from "./InvoicePreviewRow";
 import { InvoicePreviewTotal } from "./InvoicePreviewTotal";
 import { InvoicePreviewTable } from "./InvoicePreviewTable";
 
@@ -19,8 +18,6 @@ type InvoicePreviewProps = {
   lineItems?: string[][];
   columns?: string[];
 };
-
-const DEFAULT_COLUMNS = ["Item", "Qty", "Price"];
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = () => {
   const { control } = useFormContext<InvoiceFormValues>();
@@ -77,14 +74,14 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = () => {
           <LabeledValue label="Buyer name" value={buyer?.name ?? ""} />
           <div className="flex flex-col">
             <IacText
-              text={`Invoice date ${
+              text={`Invoice date: ${
                 issueDate ? format(issueDate, "dd-MM-yyyy") : "---"
               }`}
               size="sm"
               weight="medium"
             />
             <IacText
-              text={`Due date ${dueDate ? format(dueDate, "dd-MM-yyyy") : "---"}`}
+              text={`Due date: ${dueDate ? format(dueDate, "dd-MM-yyyy") : "---"}`}
               size="sm"
               weight="medium"
             />

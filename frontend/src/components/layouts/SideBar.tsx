@@ -18,7 +18,7 @@ const SideBar = () => {
 
   const sideBarItems: SideBarType[] = [
     { name: "Home", route: "/home", icon: HomeIcon },
-    { name: "All Invoices", route: "/invoices", icon: LayoutList },
+    { name: "Invoices", route: "/invoices", icon: LayoutList },
   ];
 
   const onItemClick = (route: Routes) => {

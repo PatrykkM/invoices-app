@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -7,22 +9,28 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 
-export function InvoicePreviewTable({
+export function InvoicesTable({
   items,
 }: {
   items?: { description?: string; quantity?: number; netPrice?: number }[];
 }) {
+  const mockData = [
+    { description: "Item 1", quantity: 2, netPrice: 50 },
+    { description: "Item 2", quantity: 1, netPrice: 100 },
+    { description: "Item 3", quantity: 5, netPrice: 20 },
+  ];
+
   return (
-    <Table wrapperClassName=" overflow-auto rounded-md border">
-      <TableHeader className="h-14 bg-accent200">
+    <Table>
+      <TableHeader>
         <TableRow>
-          <TableHead className="text-base100">Description</TableHead>
-          <TableHead className="text-base100">Qty</TableHead>
-          <TableHead className="text-base100">Price</TableHead>
+          <TableHead>Description</TableHead>
+          <TableHead>Qty</TableHead>
+          <TableHead>Price</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {items?.map((item, i) => (
+        {mockData?.map((item, i) => (
           <TableRow key={i} className="h-14">
             <TableCell className="whitespace-normal font-medium [overflow-wrap:anywhere]">
               {item.description}
