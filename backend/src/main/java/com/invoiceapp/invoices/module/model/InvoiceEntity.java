@@ -5,20 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-
 @Entity
 @Table(name = "invoice")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 public class InvoiceEntity {
 
     @Id
@@ -37,7 +35,7 @@ public class InvoiceEntity {
     private LocalDate dueDate;
 
     @Embedded
-    private Buyer Buyer;
+    private Buyer buyer;
 
     @ElementCollection
     private List<InvoiceItem> items = new ArrayList<>();
