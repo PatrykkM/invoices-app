@@ -1,0 +1,25 @@
+package com.invoiceapp.invoices.module.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Embeddable
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+
+public class InvoiceItem {
+    @Column(nullable=false)
+    private String description;
+
+    @Column(nullable=false, precision=14, scale=2)
+    private BigDecimal quantity;
+
+    @Column(nullable = false)
+    private int netPrice;
+}
