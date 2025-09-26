@@ -1,5 +1,30 @@
 "use client";
 
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+
+import { Button } from "@/src/components/ui/button";
+import { Checkbox } from "@/src/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
+import { Input } from "@/src/components/ui/input";
 import {
   Table,
   TableBody,
@@ -8,73 +33,313 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import { useGetInvoices } from "../hooks/useGetInvoices";
+import { InvoiceDto } from "@/src/types/invoiceDto";
 
-interface TableData {
-  invoiceNumber: string;
-  issueDate: string;
-  dueDate: string;
-  NIP: string;
-  totalGrossPrice: number;
-}
+const data: InvoiceDto[] = [
+  {
+    id: "1a2b3c4d",
+    invoiceNumber: "INV-001",
+    buyer: {
+      name: "John Doe1",
+      NIP: "123-456-7890",
+    },
+    issueDate: "2023-10-01" as unknown as Date,
+    dueDate: "2023-10-15" as unknown as Date,
+    items: [
+      { description: "Item 1", quantity: 2, netPrice: 100 },
+      { description: "Item 2", quantity: 1, netPrice: 200 },
+    ],
+  },
+  {
+    id: "1a2b3c4d",
+    invoiceNumber: "INV-001",
+    buyer: {
+      name: "John Doe",
+      NIP: "123-456-7890",
+    },
+    issueDate: "2023-10-01" as unknown as Date,
+    dueDate: "2023-10-15" as unknown as Date,
+    items: [
+      { description: "Item 1", quantity: 2, netPrice: 100 },
+      { description: "Item 2", quantity: 1, netPrice: 200 },
+    ],
+  },
+  {
+    id: "1a2b3c4d",
+    invoiceNumber: "INV-001",
+    buyer: {
+      name: "John Doe",
+      NIP: "123-456-7890",
+    },
+    issueDate: "2023-10-01" as unknown as Date,
+    dueDate: "2023-10-15" as unknown as Date,
+    items: [
+      { description: "Item 1", quantity: 2, netPrice: 100 },
+      { description: "Item 2", quantity: 1, netPrice: 200 },
+    ],
+  },
+  {
+    id: "1a2b3c4d",
+    invoiceNumber: "INV-001",
+    buyer: {
+      name: "John Doe",
+      NIP: "123-456-7890",
+    },
+    issueDate: "2023-10-01" as unknown as Date,
+    dueDate: "2023-10-15" as unknown as Date,
+    items: [
+      { description: "Item 1", quantity: 2, netPrice: 100 },
+      { description: "Item 2", quantity: 1, netPrice: 200 },
+    ],
+  },
+  {
+    id: "1a2b3c4d",
+    invoiceNumber: "INV-001",
+    buyer: {
+      name: "John Doe",
+      NIP: "123-456-7890",
+    },
+    issueDate: "2023-10-01" as unknown as Date,
+    dueDate: "2023-10-15" as unknown as Date,
+    items: [
+      { description: "Item 1", quantity: 2, netPrice: 100 },
+      { description: "Item 2", quantity: 1, netPrice: 200 },
+    ],
+  },
+];
+
+export const columns: ColumnDef<InvoiceDto>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "invoiceNumber",
+    header: "Invoice Number",
+    cell: ({ row }) => <div>{row.getValue("invoiceNumber")}</div>,
+  },
+  {
+    id: "buyerName",
+    accessorFn: (row) => row.buyer?.name ?? "",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className=""
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Buyer Name
+        <ArrowUpDown />
+      </Button>
+    ),
+    cell: ({ getValue }) => (
+      <div className="lowercase">{String(getValue())}</div>
+    ),
+  },
+  {
+    accessorKey: "dueDate",
+    header: () => <div>Due Date</div>,
+    cell: ({ row }) => {
+      const dueDate = new Date(row.getValue("dueDate"));
+      return <div>{dueDate.toLocaleDateString()}</div>;
+    },
+  },
+  {
+    accessorKey: "issueDate",
+    header: () => <div>Issue Date</div>,
+    cell: ({ row }) => {
+      const issueDate = new Date(row.getValue("issueDate"));
+      return <div>{issueDate.toLocaleDateString()}</div>;
+    },
+  },
+  {
+    accessorKey: "totalGrossPrice",
+    header: () => <div>Total Gross Price</div>,
+    cell: ({ row }) => {
+      return <div>1234</div>;
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>Preview</DropdownMenuItem>
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
 
 export function InvoicesTable() {
-  const { data: invoices } = useGetInvoices();
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
-  const mockData: TableData[] = [
-    {
-      invoiceNumber: "Item 1",
-      issueDate: "2023-10-10",
-      dueDate: "2023-10-20",
-      NIP: "123-456-78-90",
-      totalGrossPrice: 100,
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
     },
-    {
-      invoiceNumber: "Item 2",
-      issueDate: "2023-11-01",
-      dueDate: "2023-11-10",
-      NIP: "123-456-78-90",
-      totalGrossPrice: 100,
-    },
-    {
-      invoiceNumber: "Item 3",
-      issueDate: "2023-12-01",
-      dueDate: "2023-12-20",
-      NIP: "123-456-78-90",
-      totalGrossPrice: 100,
-    },
-  ];
+  });
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Invoice Number</TableHead>
-          <TableHead>Issue Date</TableHead>
-          <TableHead>Due Date</TableHead>
-          <TableHead>NIP</TableHead>
-          <TableHead>Total Gross Price</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {mockData?.map((item, i) => (
-          <TableRow key={i} className="h-14">
-            <TableCell className="whitespace-normal font-medium [overflow-wrap:anywhere]">
-              {item.invoiceNumber}
-            </TableCell>
-            <TableCell className="whitespace-normal font-medium [overflow-wrap:anywhere]">
-              {item.NIP}
-            </TableCell>
-            <TableCell className="whitespace-normal font-medium [overflow-wrap:anywhere]">
-              {item.issueDate}
-            </TableCell>
-            <TableCell className="whitespace-normal font-medium [overflow-wrap:anywhere]">
-              {item.dueDate}
-            </TableCell>
-            <TableCell>{item.totalGrossPrice}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="w-full">
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter by Invoice Number..."
+          value={
+            (table.getColumn("invoiceNumber")?.getFilterValue() as string) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("invoiceNumber")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className="overflow-hidden rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
