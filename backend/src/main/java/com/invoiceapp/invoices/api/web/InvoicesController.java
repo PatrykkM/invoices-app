@@ -1,23 +1,33 @@
 package com.invoiceapp.invoices.api.web;
 
 import com.invoiceapp.invoices.api.app.InvoicesService;
+import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.api.web.dto.InvoiceDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/invoices")
 public class InvoicesController {
     private final InvoicesService service;
+    private final InvoicesMapper mapper;
 
     @GetMapping
     public List<InvoiceDto> getInvoices() {
-        return service.list().stream();
+        return mapper.toDtoList(service.getAllInvoices());
+    }
+
+    @PostMapping
+    public InvoiceDto create(@RequestBody CreateInvoiceDto req) {
+        return mapper.toDto(service.createInvoice(req));
+    }
+
+    @PutMapping("/{id}")
+    public InvoiceDto update(@PathVariable UUID id, @RequestBody CreateInvoiceDto req) {
+        return mapper.toDto(service.updateInvoice(id, req));
     }
 }

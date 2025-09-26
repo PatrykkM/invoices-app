@@ -1,5 +1,7 @@
 package com.invoiceapp.invoices.api.app;
 
+import com.invoiceapp.invoices.api.web.InvoicesMapper;
+import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.module.model.InvoiceEntity;
 import com.invoiceapp.invoices.module.repository.InvoiceRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,21 +16,17 @@ import java.util.UUID;
 @Transactional
 public class InvoicesService {
     private final InvoiceRepository repo;
+    private final InvoicesMapper mapper;
 
-    public List<InvoiceEntity> list() { return repo.findAll(); }
+    public List<InvoiceEntity> getAllInvoices() { return repo.findAll(); }
 
-    public InvoiceEntity getAllInvoices(UUID id) { return repo.findById(id).orElseThrow(); }
+    public InvoiceEntity getInvoiceById(UUID id) { return repo.findById(id).orElseThrow(); }
 
-    public InvoiceEntity createInvoice(InvoiceEntity e) { return repo.save(e); }
+    public InvoiceEntity createInvoice(CreateInvoiceDto dto) { return repo.save(mapper.toEntity(dto)); }
 
-    public InvoiceEntity updateInvoice(UUID id, InvoiceEntity changes) {
+    public InvoiceEntity updateInvoice(UUID id, CreateInvoiceDto dto) {
         var e = repo.findById(id).orElseThrow();
-        e.setInvoiceNumber(changes.getInvoiceNumber());
-        e.setIssueDate(changes.getIssueDate());
-        e.setDueDate(changes.getDueDate());
-        e.setBuyer(changes.getBuyer());
-        e.getItems().clear();
-        e.getItems().addAll(changes.getItems());
+        mapper.updateEntity(e,dto);
         return e;
     }
 
