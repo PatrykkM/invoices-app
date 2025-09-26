@@ -16,7 +16,7 @@ import java.util.UUID;
 @Table(name = "invoice")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 public class InvoiceEntity {
 
     @Id

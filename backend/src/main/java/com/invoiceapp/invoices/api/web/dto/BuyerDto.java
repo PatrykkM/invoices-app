@@ -9,4 +9,4 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuyerDto { private String name; private String nip; }
+public class BuyerDto { private String name; private String NIP; }

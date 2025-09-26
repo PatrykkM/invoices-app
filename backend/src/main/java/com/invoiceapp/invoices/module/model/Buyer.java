@@ -6,7 +6,7 @@ import lombok.*;
 
 @Embeddable
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 @AllArgsConstructor
 public class Buyer {
     @NotBlank

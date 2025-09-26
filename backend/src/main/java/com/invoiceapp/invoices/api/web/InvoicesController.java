@@ -4,6 +4,7 @@ import com.invoiceapp.invoices.api.app.InvoicesService;
 import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.api.web.dto.InvoiceDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.UUID;
 @RequestMapping("/api/invoices")
 public class InvoicesController {
     private final InvoicesService service;
+
+    @Qualifier("invoicesMapper")
     private final InvoicesMapper mapper;
 
     @GetMapping

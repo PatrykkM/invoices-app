@@ -4,6 +4,7 @@ import com.invoiceapp.invoices.api.web.InvoicesMapper;
 import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.module.model.InvoiceEntity;
 import com.invoiceapp.invoices.module.repository.InvoiceRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Transactional
 public class InvoicesService {
     private final InvoiceRepository repo;
+    @Qualifier("invoicesMapper")
     private final InvoicesMapper mapper;
 
     public List<InvoiceEntity> getAllInvoices() { return repo.findAll(); }
