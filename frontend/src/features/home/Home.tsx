@@ -6,7 +6,7 @@ import { InvoiceForm } from "./components/InvoiceForm";
 import { invoiceFormSchema, InvoiceFormValues } from "./schemas/invoiceForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
-import { fetchApi } from "@/src/services/service-base";
+import { fetchApi } from "@/src/services/serviceBase";
 
 const Home = () => {
   useEffect(() => {

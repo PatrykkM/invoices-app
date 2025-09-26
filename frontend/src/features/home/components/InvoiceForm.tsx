@@ -222,7 +222,7 @@ export function InvoiceForm({
                 className="self-start font-bold"
                 onClick={() => invoiceForm.handleSubmit(() => {})()}
               >
-                Save
+                Create
               </Button>
             </div>
           </div>

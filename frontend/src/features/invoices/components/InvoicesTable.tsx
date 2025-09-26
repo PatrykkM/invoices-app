@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
+import { useGetInvoices } from "../hooks/useGetInvoices";
 
 interface TableData {
   invoiceNumber: string;
@@ -17,11 +18,9 @@ interface TableData {
   totalGrossPrice: number;
 }
 
-export function InvoicesTable({
-  items,
-}: {
-  items?: { description?: string; quantity?: number; netPrice?: number }[];
-}) {
+export function InvoicesTable() {
+  const { data: invoices } = useGetInvoices();
+
   const mockData: TableData[] = [
     {
       invoiceNumber: "Item 1",
