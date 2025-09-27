@@ -34,79 +34,8 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 import { InvoiceDto } from "@/src/types/invoiceDto";
-
-const data: InvoiceDto[] = [
-  {
-    id: "1a2b3c4d",
-    invoiceNumber: "INV-001",
-    buyer: {
-      name: "John Doe1",
-      NIP: "123-456-7890",
-    },
-    issueDate: "2023-10-01" as unknown as Date,
-    dueDate: "2023-10-15" as unknown as Date,
-    items: [
-      { description: "Item 1", quantity: 2, netPrice: 100 },
-      { description: "Item 2", quantity: 1, netPrice: 200 },
-    ],
-  },
-  {
-    id: "1a2b3c4d",
-    invoiceNumber: "INV-001",
-    buyer: {
-      name: "John Doe",
-      NIP: "123-456-7890",
-    },
-    issueDate: "2023-10-01" as unknown as Date,
-    dueDate: "2023-10-15" as unknown as Date,
-    items: [
-      { description: "Item 1", quantity: 2, netPrice: 100 },
-      { description: "Item 2", quantity: 1, netPrice: 200 },
-    ],
-  },
-  {
-    id: "1a2b3c4d",
-    invoiceNumber: "INV-001",
-    buyer: {
-      name: "John Doe",
-      NIP: "123-456-7890",
-    },
-    issueDate: "2023-10-01" as unknown as Date,
-    dueDate: "2023-10-15" as unknown as Date,
-    items: [
-      { description: "Item 1", quantity: 2, netPrice: 100 },
-      { description: "Item 2", quantity: 1, netPrice: 200 },
-    ],
-  },
-  {
-    id: "1a2b3c4d",
-    invoiceNumber: "INV-001",
-    buyer: {
-      name: "John Doe",
-      NIP: "123-456-7890",
-    },
-    issueDate: "2023-10-01" as unknown as Date,
-    dueDate: "2023-10-15" as unknown as Date,
-    items: [
-      { description: "Item 1", quantity: 2, netPrice: 100 },
-      { description: "Item 2", quantity: 1, netPrice: 200 },
-    ],
-  },
-  {
-    id: "1a2b3c4d",
-    invoiceNumber: "INV-001",
-    buyer: {
-      name: "John Doe",
-      NIP: "123-456-7890",
-    },
-    issueDate: "2023-10-01" as unknown as Date,
-    dueDate: "2023-10-15" as unknown as Date,
-    items: [
-      { description: "Item 1", quantity: 2, netPrice: 100 },
-      { description: "Item 2", quantity: 1, netPrice: 200 },
-    ],
-  },
-];
+import { useGetInvoices } from "../hooks/useGetInvoices";
+import { InvoicesTableSkeleton } from "./InvoicesSkeleton";
 
 export const columns: ColumnDef<InvoiceDto>[] = [
   {
@@ -199,6 +128,10 @@ export const columns: ColumnDef<InvoiceDto>[] = [
 ];
 
 export function InvoicesTable() {
+  const { data, isLoading } = useGetInvoices();
+
+  const rows: InvoiceDto[] = data ?? [];
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -208,7 +141,7 @@ export function InvoicesTable() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -225,6 +158,10 @@ export function InvoicesTable() {
       rowSelection,
     },
   });
+
+  if (isLoading) {
+    return <InvoicesTableSkeleton />;
+  }
 
   return (
     <div className="w-full">
@@ -266,56 +203,48 @@ export function InvoicesTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}

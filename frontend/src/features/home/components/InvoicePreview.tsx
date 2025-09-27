@@ -28,7 +28,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = () => {
   const totalPrice = useMemo(() => {
     if (!items) return 0;
     return items.reduce((acc, item) => {
-      console.log(acc);
       const net = item.netPrice ?? 0;
       const qty = item.quantity ?? 0;
       return acc + net * qty;

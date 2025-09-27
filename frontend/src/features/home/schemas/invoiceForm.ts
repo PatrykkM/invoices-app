@@ -28,10 +28,11 @@ export const invoiceFormSchema = z.object({
         description: z
           .string()
           .min(2, { message: "Item name must be at least 2 characters." }),
-        quantity: z
+        quantity: z.coerce
           .number()
+          .int()
           .min(1, { message: "Quantity must be at least 1." }),
-        netPrice: z
+        netPrice: z.coerce
           .number()
           .min(0.01, { message: "Net price must be at least 0.01." }),
       }),

@@ -1,4 +1,5 @@
 import IacText from "@/src/components/ui/IacText";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
 interface CardData {
   label: string;
@@ -42,4 +43,16 @@ const SingleCard = ({ data }: { data: CardData }) => {
 
 const CardWrapper = ({ children }: { children: React.ReactNode }) => {
   return <div className="flex flex-row gap-6">{children}</div>;
+};
+
+const CardsSkeleton = () => {
+  return (
+    <div className="flex max-w-[230px] flex-1 flex-col gap-4 rounded-xl border border-base100 p-3">
+      <div className="flex items-center gap-2">
+        <Skeleton className={`h-2 w-2 rounded-full`} />
+        <Skeleton className="h-4 w-1/2" />
+      </div>
+      <Skeleton className="h-4 w-1/6" />
+    </div>
+  );
 };
