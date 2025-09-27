@@ -6,6 +6,7 @@ import lombok.*;
 
 @Embeddable
 @Getter
+@Setter
 @NoArgsConstructor()
 @AllArgsConstructor
 public class Buyer {

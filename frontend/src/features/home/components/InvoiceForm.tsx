@@ -24,6 +24,7 @@ import { colors } from "@/src/theme/colors";
 import { ImportFromJsonButton } from "./ImportFromJsonButton";
 import { cn } from "@/src/lib/utils";
 import useCreateInvoice from "../hooks/useCreateInvoice";
+import { useRouter } from "next/navigation";
 
 const defaultValues: InvoiceFormValues = {
   invoiceNumber: "",
@@ -38,6 +39,8 @@ export function InvoiceForm({
 }: {
   invoiceForm: ReturnType<typeof useForm<InvoiceFormValues>>;
 }) {
+  const router = useRouter();
+
   const { mutate, isPending, isSuccess, data } = useCreateInvoice();
 
   const { fields, append, remove } = useFieldArray({
@@ -47,6 +50,7 @@ export function InvoiceForm({
 
   const handleSubmit = (data: InvoiceFormValues) => {
     mutate(data);
+    router.push("/invoices");
   };
 
   return (

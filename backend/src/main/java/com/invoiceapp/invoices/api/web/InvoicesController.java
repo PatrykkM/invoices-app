@@ -5,6 +5,7 @@ import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.api.web.dto.InvoiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,5 +33,11 @@ public class InvoicesController {
     @PutMapping("/{id}")
     public InvoiceDto update(@PathVariable UUID id, @RequestBody CreateInvoiceDto req) {
         return mapper.toDto(service.updateInvoice(id, req));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID id) {
+        service.deleteInvoice(id);
     }
 }
