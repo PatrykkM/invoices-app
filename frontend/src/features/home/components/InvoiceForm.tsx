@@ -23,6 +23,7 @@ import { PlusIcon } from "lucide-react";
 import { colors } from "@/src/theme/colors";
 import { ImportFromJsonButton } from "./ImportFromJsonButton";
 import { cn } from "@/src/lib/utils";
+import useCreateInvoice from "../hooks/useCreateInvoice";
 
 const defaultValues: InvoiceFormValues = {
   invoiceNumber: "",
@@ -37,15 +38,24 @@ export function InvoiceForm({
 }: {
   invoiceForm: ReturnType<typeof useForm<InvoiceFormValues>>;
 }) {
+  const { mutate, isPending, isSuccess, data } = useCreateInvoice();
+
   const { fields, append, remove } = useFieldArray({
     control: invoiceForm.control,
     name: "items",
   });
 
+  const handleSubmit = (data: InvoiceFormValues) => {
+    mutate(data);
+  };
+
   return (
     <div className="flex-1 border-r border-base200 p-6">
       <Form {...invoiceForm}>
-        <form className="flex flex-col gap-6">
+        <form
+          className="flex flex-col gap-6"
+          onSubmit={invoiceForm.handleSubmit(handleSubmit)}
+        >
           <FormRow>
             {invoiceTextFields.map((field) => (
               <FormField
@@ -216,11 +226,10 @@ export function InvoiceForm({
               </Button>
 
               <Button
-                type="button"
+                type="submit"
                 variant={"accent"}
                 size={"lg"}
                 className="self-start font-bold"
-                onClick={() => invoiceForm.handleSubmit(() => {})()}
               >
                 Create
               </Button>

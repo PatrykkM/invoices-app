@@ -7,12 +7,9 @@ import { invoiceFormSchema, InvoiceFormValues } from "./schemas/invoiceForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { fetchApi } from "@/src/services/serviceBase";
+import useCreateInvoice from "./hooks/useCreateInvoice";
 
 const Home = () => {
-  useEffect(() => {
-    fetchApi("GET", "api/hello").then((data) => console.log(data));
-  }, []);
-
   const invoiceForm = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceFormSchema),
     defaultValues: {
