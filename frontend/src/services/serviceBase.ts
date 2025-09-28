@@ -26,5 +26,11 @@ export async function fetchApi<Resp>(
     throw new Error(`${res.status} ${res.statusText}${msg ? `${msg}` : ""}`);
   }
 
-  return (await res.json()) as Resp;
+  const text = await res.text();
+
+  if (!text.trim()) {
+    return {} as Resp;
+  }
+
+  return JSON.parse(text) as Resp;
 }

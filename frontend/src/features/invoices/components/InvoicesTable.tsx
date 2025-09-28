@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -36,109 +36,135 @@ import {
 import { InvoiceDto } from "@/src/types/invoiceDto";
 import { useGetInvoices } from "../hooks/useGetInvoices";
 import { InvoicesTableSkeleton } from "./InvoicesSkeleton";
-
-export const columns: ColumnDef<InvoiceDto>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "invoiceNumber",
-    header: "Invoice Number",
-    cell: ({ row }) => <div>{row.getValue("invoiceNumber")}</div>,
-  },
-  {
-    id: "buyerName",
-    accessorFn: (row) => row.buyer?.name ?? "",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        className=""
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Buyer Name
-        <ArrowUpDown />
-      </Button>
-    ),
-    cell: ({ getValue }) => (
-      <div className="lowercase">{String(getValue())}</div>
-    ),
-  },
-  {
-    accessorKey: "dueDate",
-    header: () => <div>Due Date</div>,
-    cell: ({ row }) => {
-      const dueDate = new Date(row.getValue("dueDate"));
-      return <div>{dueDate.toLocaleDateString()}</div>;
-    },
-  },
-  {
-    accessorKey: "issueDate",
-    header: () => <div>Issue Date</div>,
-    cell: ({ row }) => {
-      const issueDate = new Date(row.getValue("issueDate"));
-      return <div>{issueDate.toLocaleDateString()}</div>;
-    },
-  },
-  {
-    accessorKey: "totalGrossPrice",
-    header: () => <div>Total Gross Price</div>,
-    cell: ({ row }) => {
-      return <div>1234</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Preview</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+import useDeleteInvoice from "../hooks/useDeleteInvoice";
+import { DialogPreviewInvoice } from "./DialogPreviewInvoice";
 
 export function InvoicesTable() {
+  const { mutate } = useDeleteInvoice();
+
+  const [selectedInvoice, setSelectedInvoice] = useState<
+    InvoiceDto | undefined
+  >(undefined);
+
   const { data, isLoading } = useGetInvoices();
 
   const rows: InvoiceDto[] = data ?? [];
 
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const openToolbarPreview = () => {
+    const selected = table.getSelectedRowModel().rows[0]?.original as
+      | InvoiceDto
+      | undefined;
+    if (selected) setSelectedInvoice(selected);
+    setIsDialogOpen(true);
+  };
+
+  const columns: ColumnDef<InvoiceDto>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "invoiceNumber",
+      header: "Invoice Number",
+      cell: ({ row }) => <div>{row.getValue("invoiceNumber")}</div>,
+    },
+    {
+      id: "buyerName",
+      accessorFn: (row) => row.buyer?.name ?? "",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          className=""
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Buyer Name
+          <ArrowUpDown />
+        </Button>
+      ),
+      cell: ({ getValue }) => (
+        <div className="lowercase">{String(getValue())}</div>
+      ),
+    },
+    {
+      accessorKey: "dueDate",
+      header: () => <div>Due Date</div>,
+      cell: ({ row }) => {
+        const dueDate = new Date(row.getValue("dueDate"));
+        return <div>{dueDate.toLocaleDateString()}</div>;
+      },
+    },
+    {
+      accessorKey: "issueDate",
+      header: () => <div>Issue Date</div>,
+      cell: ({ row }) => {
+        const issueDate = new Date(row.getValue("issueDate"));
+        return <div>{issueDate.toLocaleDateString()}</div>;
+      },
+    },
+    {
+      accessorKey: "totalGrossPrice",
+      header: () => <div>Total Gross Price</div>,
+      cell: ({ row }) => {
+        return <div>1234</div>;
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const invoice = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedInvoice(invoice);
+                  setIsDialogOpen(true);
+                }}
+              >
+                Preview
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => mutate(invoice.id)}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
   const table = useReactTable({
     data: rows,
@@ -269,6 +295,11 @@ export function InvoicesTable() {
           </Button>
         </div>
       </div>
+      <DialogPreviewInvoice
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        invoice={selectedInvoice}
+      />
     </div>
   );
 }
