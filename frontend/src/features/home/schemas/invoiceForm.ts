@@ -7,7 +7,7 @@ export const invoiceFormSchema = z.object({
 
   issueDate: z
     .union([z.date(), z.undefined()])
-    .refine((d) => d !== undefined, { message: "Invoice date is required" })
+    .refine((d) => d !== undefined, { message: "Issue date is required" })
     .refine((d) => d === undefined || !Number.isNaN(d.getTime()), {
       message: "Invalid issue date",
     }),
@@ -28,11 +28,11 @@ export const invoiceFormSchema = z.object({
         description: z
           .string()
           .min(2, { message: "Item name must be at least 2 characters." }),
-        quantity: z.coerce
+        quantity: z
           .number()
           .int()
           .min(1, { message: "Quantity must be at least 1." }),
-        netPrice: z.coerce
+        netPrice: z
           .number()
           .min(0.01, { message: "Net price must be at least 0.01." }),
       }),
@@ -40,4 +40,4 @@ export const invoiceFormSchema = z.object({
     .min(1, { message: "At least one item is required." }),
 });
 
-export type InvoiceFormValues = z.infer<typeof invoiceFormSchema>;
+export type InvoiceFormValues = z.output<typeof invoiceFormSchema>;

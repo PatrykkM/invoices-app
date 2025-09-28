@@ -38,6 +38,8 @@ import { useGetInvoices } from "../hooks/useGetInvoices";
 import { InvoicesTableSkeleton } from "./InvoicesSkeleton";
 import useDeleteInvoice from "../hooks/useDeleteInvoice";
 import { DialogPreviewInvoice } from "./DialogPreviewInvoice";
+import { format } from "date-fns";
+import { useGetInvoiceGrossPrice } from "@/src/hooks/useGetInvoiceGrossPrice";
 
 export function InvoicesTable() {
   const { mutate } = useDeleteInvoice();
@@ -57,14 +59,6 @@ export function InvoicesTable() {
   const [rowSelection, setRowSelection] = useState({});
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const openToolbarPreview = () => {
-    const selected = table.getSelectedRowModel().rows[0]?.original as
-      | InvoiceDto
-      | undefined;
-    if (selected) setSelectedInvoice(selected);
-    setIsDialogOpen(true);
-  };
 
   const columns: ColumnDef<InvoiceDto>[] = [
     {
@@ -116,7 +110,7 @@ export function InvoicesTable() {
       header: () => <div>Due Date</div>,
       cell: ({ row }) => {
         const dueDate = new Date(row.getValue("dueDate"));
-        return <div>{dueDate.toLocaleDateString()}</div>;
+        return <div>{format(dueDate, "dd-MM-yyyy")}</div>;
       },
     },
     {
@@ -124,15 +118,15 @@ export function InvoicesTable() {
       header: () => <div>Issue Date</div>,
       cell: ({ row }) => {
         const issueDate = new Date(row.getValue("issueDate"));
-        return <div>{issueDate.toLocaleDateString()}</div>;
+        return <div>{format(issueDate, "dd-MM-yyyy")}</div>;
       },
     },
     {
       accessorKey: "totalGrossPrice",
       header: () => <div>Total Gross Price</div>,
-      cell: ({ row }) => {
-        return <div>1234</div>;
-      },
+      cell: ({ row }) => (
+        <TotalGrossPriceCell items={row.original.items || []} />
+      ),
     },
     {
       id: "actions",
@@ -155,6 +149,9 @@ export function InvoicesTable() {
                 }}
               >
                 Preview
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => mutate(invoice.id)}>
+                Edit
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => mutate(invoice.id)}>
                 Delete
@@ -302,4 +299,13 @@ export function InvoicesTable() {
       />
     </div>
   );
+}
+
+function TotalGrossPriceCell({
+  items,
+}: {
+  items: { netPrice?: number; quantity?: number }[];
+}) {
+  const { totalPrice, tax } = useGetInvoiceGrossPrice({ items });
+  return <div>${(totalPrice + tax).toFixed(2)}</div>;
 }

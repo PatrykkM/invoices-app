@@ -1,4 +1,3 @@
-// DialogPreviewInvoice.tsx
 "use client";
 
 import InvoicePreviewContent from "@/src/components/layouts/InvoicePreviewContent";
@@ -7,11 +6,13 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import { InvoiceDto } from "@/src/types/invoiceDto";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 type Props = {
   open: boolean;
@@ -29,10 +30,14 @@ export function DialogPreviewInvoice({ open, onOpenChange, invoice }: Props) {
           <DialogTitle>{`${invoice.invoiceNumber}`}</DialogTitle>
         </DialogHeader>
         <InvoicePreviewContent invoice={invoice} />
-
+        <DialogDescription asChild>
+          <VisuallyHidden>
+            Podgląd faktury {invoice.invoiceNumber}
+          </VisuallyHidden>
+        </DialogDescription>
         <DialogFooter className="sm:justify-end">
           <DialogClose asChild>
-            <Button type="button" variant="destructive">
+            <Button type="button" variant="outline">
               Close
             </Button>
           </DialogClose>

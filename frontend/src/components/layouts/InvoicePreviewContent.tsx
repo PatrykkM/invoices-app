@@ -1,25 +1,15 @@
-import React, { useMemo } from "react";
+import React from "react";
 import IacText from "../ui/IacText";
 import { InvoiceDto } from "@/src/types/invoiceDto";
 import { format } from "date-fns";
 import { InvoicePreviewTable } from "@/src/features/home/components/InvoicePreviewTable";
 import { InvoicePreviewTotal } from "@/src/features/home/components/InvoicePreviewTotal";
+import { useGetInvoiceGrossPrice } from "@/src/hooks/useGetInvoiceGrossPrice";
 
 const InvoicePreviewContent = ({ invoice }: { invoice: InvoiceDto }) => {
   const { invoiceNumber, issueDate, dueDate, buyer, items } = invoice;
 
-  const totalPrice = useMemo(() => {
-    if (!items) return 0;
-    return items.reduce((acc, item) => {
-      const net = item.netPrice ?? 0;
-      const qty = item.quantity ?? 0;
-      return acc + net * qty;
-    }, 0);
-  }, [items]);
-
-  const tax = useMemo(() => {
-    return totalPrice * 0.23;
-  }, [totalPrice]);
+  const { totalPrice, tax } = useGetInvoiceGrossPrice({ items });
 
   return (
     <div className="flex flex-1 flex-col gap-6 bg-accent100 p-12">
@@ -56,7 +46,7 @@ const InvoicePreviewContent = ({ invoice }: { invoice: InvoiceDto }) => {
           <LabeledValue label="Buyer name" value={buyer?.name ?? ""} />
           <div className="flex flex-col">
             <IacText
-              text={`Invoice date: ${
+              text={`Issue date: ${
                 issueDate ? format(issueDate, "dd-MM-yyyy") : "---"
               }`}
               size="sm"

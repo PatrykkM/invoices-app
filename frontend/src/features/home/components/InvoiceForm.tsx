@@ -25,6 +25,7 @@ import { ImportFromJsonButton } from "./ImportFromJsonButton";
 import { cn } from "@/src/lib/utils";
 import useCreateInvoice from "../hooks/useCreateInvoice";
 import { useRouter } from "next/navigation";
+import { NumericFormat } from "react-number-format";
 
 const defaultValues: InvoiceFormValues = {
   invoiceNumber: "",
@@ -41,7 +42,7 @@ export function InvoiceForm({
 }) {
   const router = useRouter();
 
-  const { mutate, isPending, isSuccess, data } = useCreateInvoice();
+  const { mutate } = useCreateInvoice();
 
   const { fields, append, remove } = useFieldArray({
     control: invoiceForm.control,
@@ -147,12 +148,20 @@ export function InvoiceForm({
                   render={({ field }) => (
                     <FormItem className="flex flex-1 flex-col">
                       <FormControl>
-                        <Input
-                          type="number"
-                          min={1}
-                          step={1}
+                        <NumericFormat
+                          getInputRef={field.ref}
+                          onBlur={field.onBlur}
+                          name={field.name}
                           value={field.value ?? ""}
-                          onChange={field.onChange}
+                          allowNegative={false}
+                          allowLeadingZeros={false}
+                          decimalScale={0}
+                          inputMode="numeric"
+                          onValueChange={(vals) => {
+                            const v = vals.floatValue;
+                            field.onChange(v === undefined ? undefined : v);
+                          }}
+                          customInput={Input}
                           className="border-base300"
                         />
                       </FormControl>
@@ -167,12 +176,20 @@ export function InvoiceForm({
                   render={({ field }) => (
                     <FormItem className="flex flex-1 flex-col">
                       <FormControl>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.01"
+                        <NumericFormat
+                          getInputRef={field.ref}
+                          onBlur={field.onBlur}
+                          name={field.name}
                           value={field.value ?? ""}
-                          onChange={field.onChange}
+                          allowNegative={false}
+                          allowLeadingZeros={false}
+                          decimalScale={2}
+                          inputMode="numeric"
+                          onValueChange={(vals) => {
+                            const v = vals.floatValue;
+                            field.onChange(v === undefined ? undefined : v);
+                          }}
+                          customInput={Input}
                           className="border-base300"
                         />
                       </FormControl>
