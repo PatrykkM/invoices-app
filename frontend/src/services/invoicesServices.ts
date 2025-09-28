@@ -9,6 +9,9 @@ const invoicesService = {
     fetchApi<InvoiceDto>("POST", "api/invoices", { body }),
 
   deleteInvoice: (id: string) => fetchApi<void>("DELETE", `api/invoices/${id}`),
+
+  editInvoice: (id: string, body: CreateInvoiceDto) =>
+    fetchApi<InvoiceDto>("PUT", `api/invoices/${id}`, { body }),
 };
 
 export default invoicesService;

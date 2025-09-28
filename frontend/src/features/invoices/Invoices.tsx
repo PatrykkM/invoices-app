@@ -5,7 +5,6 @@ import IacText from "@/src/components/ui/IacText";
 import { Cards } from "./components/Cards";
 import Header from "./components/Header";
 import { InvoicesTable } from "./components/InvoicesTable";
-import { useGetInvoices } from "./hooks/useGetInvoices";
 
 const Invoices = () => {
   return (

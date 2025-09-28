@@ -40,9 +40,12 @@ import useDeleteInvoice from "../hooks/useDeleteInvoice";
 import { DialogPreviewInvoice } from "./DialogPreviewInvoice";
 import { format } from "date-fns";
 import { useGetInvoiceGrossPrice } from "@/src/hooks/useGetInvoiceGrossPrice";
+import { useRouter } from "next/navigation";
 
 export function InvoicesTable() {
   const { mutate } = useDeleteInvoice();
+
+  const router = useRouter();
 
   const [selectedInvoice, setSelectedInvoice] = useState<
     InvoiceDto | undefined
@@ -150,7 +153,9 @@ export function InvoicesTable() {
               >
                 Preview
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => mutate(invoice.id)}>
+              <DropdownMenuItem
+                onClick={() => router.push(`/home/${invoice.id}`)}
+              >
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => mutate(invoice.id)}>

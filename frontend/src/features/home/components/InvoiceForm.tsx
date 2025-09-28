@@ -26,6 +26,7 @@ import { cn } from "@/src/lib/utils";
 import useCreateInvoice from "../hooks/useCreateInvoice";
 import { useRouter } from "next/navigation";
 import { NumericFormat } from "react-number-format";
+import useEditInvoice from "../hooks/useEditInvoice";
 
 const defaultValues: InvoiceFormValues = {
   invoiceNumber: "",
@@ -37,12 +38,16 @@ const defaultValues: InvoiceFormValues = {
 
 export function InvoiceForm({
   invoiceForm,
+  editedInvoiceId = "",
 }: {
   invoiceForm: ReturnType<typeof useForm<InvoiceFormValues>>;
+  editedInvoiceId?: string;
 }) {
   const router = useRouter();
 
-  const { mutate } = useCreateInvoice();
+  const { mutate: createInvoice } = useCreateInvoice();
+
+  const { mutate: editInvoice } = useEditInvoice(editedInvoiceId);
 
   const { fields, append, remove } = useFieldArray({
     control: invoiceForm.control,
@@ -50,12 +55,31 @@ export function InvoiceForm({
   });
 
   const handleSubmit = (data: InvoiceFormValues) => {
-    mutate(data);
+    if (editedInvoiceId) {
+      editInvoice(data);
+    } else {
+      createInvoice(data);
+    }
     router.push("/invoices");
   };
 
   return (
-    <div className="flex-1 border-r border-base200 p-6">
+    <div className="flex flex-1 flex-col gap-10 border-r border-base200 p-6">
+      {editedInvoiceId && (
+        <div className="flex flex-col items-start gap-2">
+          <IacText
+            text={
+              "Warning you are in edit mode and you are editing existing invoice"
+            }
+            size="sm"
+            color="base400"
+          />
+          <Button variant="outline" onClick={() => router.push("/home")}>
+            Exit Edit Mode
+          </Button>
+        </div>
+      )}
+
       <Form {...invoiceForm}>
         <form
           className="flex flex-col gap-6"
@@ -252,7 +276,7 @@ export function InvoiceForm({
                 size={"lg"}
                 className="self-start font-bold"
               >
-                Create
+                {editedInvoiceId ? "Save Changes" : "Create Invoice"}
               </Button>
             </div>
           </div>
