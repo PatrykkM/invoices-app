@@ -17,6 +17,7 @@ import java.util.UUID;
 @Transactional
 public class InvoicesService {
     private final InvoiceRepository repo;
+
     @Qualifier("invoicesMapper")
     private final InvoicesMapper mapper;
 
@@ -24,14 +25,25 @@ public class InvoicesService {
 
     public InvoiceEntity getInvoiceById(UUID id) { return repo.findById(id).orElseThrow(); }
 
-    public InvoiceEntity createInvoice(CreateInvoiceDto dto) { return repo.save(mapper.toEntity(dto)); }
+    public InvoiceEntity createInvoice(CreateInvoiceDto dto) {
+        validateBusinessRules(dto);
+        return repo.save(mapper.toEntity(dto));
+    }
 
     public InvoiceEntity updateInvoice(UUID id, CreateInvoiceDto dto) {
+        validateBusinessRules(dto);
         var e = repo.findById(id).orElseThrow();
-        mapper.updateEntity(e,dto);
+        mapper.updateEntity(e, dto);
         return e;
     }
 
     public void deleteInvoice(UUID id) { repo.deleteById(id); }
+
+    private void validateBusinessRules(CreateInvoiceDto dto) {
+        if (dto.getDueDate().isBefore(dto.getIssueDate())) {
+            throw new BusinessException("Due date cannot be before issue date");
+        }
+    }
+
 }
 

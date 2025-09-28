@@ -3,9 +3,11 @@ package com.invoiceapp.invoices.api.web;
 import com.invoiceapp.invoices.api.app.InvoicesService;
 import com.invoiceapp.invoices.api.web.dto.CreateInvoiceDto;
 import com.invoiceapp.invoices.api.web.dto.InvoiceDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/invoices")
 public class InvoicesController {
+
     private final InvoicesService service;
 
     @Qualifier("invoicesMapper")
@@ -26,12 +29,12 @@ public class InvoicesController {
     }
 
     @PostMapping
-    public InvoiceDto create(@RequestBody CreateInvoiceDto req) {
+    public InvoiceDto create(@Valid @RequestBody CreateInvoiceDto req) {
         return mapper.toDto(service.createInvoice(req));
     }
 
     @PutMapping("/{id}")
-    public InvoiceDto update(@PathVariable UUID id, @RequestBody CreateInvoiceDto req) {
+    public InvoiceDto update(@PathVariable UUID id, @Valid @RequestBody CreateInvoiceDto req) {
         return mapper.toDto(service.updateInvoice(id, req));
     }
 
@@ -41,3 +44,4 @@ public class InvoicesController {
         service.deleteInvoice(id);
     }
 }
+
