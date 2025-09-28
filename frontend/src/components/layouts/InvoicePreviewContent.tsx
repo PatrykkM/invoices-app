@@ -4,12 +4,12 @@ import { InvoiceDto } from "@/src/types/invoiceDto";
 import { format } from "date-fns";
 import { InvoicePreviewTable } from "@/src/features/home/components/InvoicePreviewTable";
 import { InvoicePreviewTotal } from "@/src/features/home/components/InvoicePreviewTotal";
-import { useGetInvoiceGrossPrice } from "@/src/hooks/useGetInvoiceGrossPrice";
+import { useGetInvoiceTotals } from "@/src/hooks/useGetInvoiceTotals";
 
 const InvoicePreviewContent = ({ invoice }: { invoice: InvoiceDto }) => {
   const { invoiceNumber, issueDate, dueDate, buyer, items } = invoice;
 
-  const { totalPrice, tax } = useGetInvoiceGrossPrice({ items });
+  const { grossTotal, taxTotal, netTotal } = useGetInvoiceTotals({ items });
 
   return (
     <div className="flex flex-1 flex-col gap-6 bg-accent100 p-12">
@@ -63,9 +63,9 @@ const InvoicePreviewContent = ({ invoice }: { invoice: InvoiceDto }) => {
           <InvoicePreviewTable items={items} />
 
           <InvoicePreviewTotal
-            subtotal={`$${totalPrice.toFixed(2)}`}
-            tax={`$${tax.toFixed(2)}`}
-            total={`$${(totalPrice + tax).toFixed(2)}`}
+            subtotal={`$${netTotal}`}
+            tax={`$${taxTotal}`}
+            total={`$${grossTotal}`}
           />
         </div>
       </div>

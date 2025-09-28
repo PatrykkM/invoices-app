@@ -34,15 +34,20 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 import { InvoiceDto } from "@/src/types/invoiceDto";
-import { useGetInvoices } from "../hooks/useGetInvoices";
 import { InvoicesTableSkeleton } from "./InvoicesSkeleton";
 import useDeleteInvoice from "../hooks/useDeleteInvoice";
 import { DialogPreviewInvoice } from "./DialogPreviewInvoice";
 import { format } from "date-fns";
-import { useGetInvoiceGrossPrice } from "@/src/hooks/useGetInvoiceGrossPrice";
 import { useRouter } from "next/navigation";
+import { useGetInvoiceTotals } from "@/src/hooks/useGetInvoiceTotals";
 
-export function InvoicesTable() {
+export function InvoicesTable({
+  data,
+  isLoading,
+}: {
+  data: InvoiceDto[] | undefined;
+  isLoading?: boolean;
+}) {
   const { mutate } = useDeleteInvoice();
 
   const router = useRouter();
@@ -50,8 +55,6 @@ export function InvoicesTable() {
   const [selectedInvoice, setSelectedInvoice] = useState<
     InvoiceDto | undefined
   >(undefined);
-
-  const { data, isLoading } = useGetInvoices();
 
   const rows: InvoiceDto[] = data ?? [];
 
@@ -311,6 +314,6 @@ function TotalGrossPriceCell({
 }: {
   items: { netPrice?: number; quantity?: number }[];
 }) {
-  const { totalPrice, tax } = useGetInvoiceGrossPrice({ items });
-  return <div>${(totalPrice + tax).toFixed(2)}</div>;
+  const { grossTotal } = useGetInvoiceTotals({ items });
+  return <div>${grossTotal}</div>;
 }
