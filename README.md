@@ -49,10 +49,10 @@ Make sure you have installed:
    - Frontend → [http://localhost:3000](http://localhost:3000)
    - Backend API → [http://localhost:8080](http://localhost:8080)
 
-5. **Test the json import**
-   In frontend folder you have test.json from wich u can get data to create invoice
+   If everything goes well, you should see the frontend UI running and connected to the API.
 
-If everything goes well, you should see the frontend UI running and connected to the API.
+5. **Test the json import**
+   You can use the test.json file located in the frontend folder to load data for generating an invoice.
 
 ## 💻 Run locally (without Docker)
 
