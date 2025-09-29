@@ -111,20 +111,21 @@ export function InvoicesTable({
         <div className="lowercase">{String(getValue())}</div>
       ),
     },
-    {
-      accessorKey: "dueDate",
-      header: () => <div>Due Date</div>,
-      cell: ({ row }) => {
-        const dueDate = new Date(row.getValue("dueDate"));
-        return <div>{format(dueDate, "dd-MM-yyyy")}</div>;
-      },
-    },
+
     {
       accessorKey: "issueDate",
       header: () => <div>Issue Date</div>,
       cell: ({ row }) => {
         const issueDate = new Date(row.getValue("issueDate"));
         return <div>{format(issueDate, "dd-MM-yyyy")}</div>;
+      },
+    },
+    {
+      accessorKey: "dueDate",
+      header: () => <div>Due Date</div>,
+      cell: ({ row }) => {
+        const dueDate = new Date(row.getValue("dueDate"));
+        return <div>{format(dueDate, "dd-MM-yyyy")}</div>;
       },
     },
     {
