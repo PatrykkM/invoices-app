@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Invoice App 🧾
 
-## Getting Started
+A fullstack invoice management system built in a short timeframe to showcase end-to-end development with Next.js, Spring Boot, and PostgreSQL.
+The app allows you to manage invoices, through a clean UI and a RESTful backend.
 
-First, run the development server:
+## 🚀 Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Frontend:** Next.js (React + TypeScript,tailwindcss, Yarn)
+- **Backend:** Spring Boot (Java 21)
+- **Database:** PostgreSQL
+- **Testing:** Spring Boot Test (JUnit & MockMvc)
+- **Containerization:** Docker & Docker Compose (backend), Jest (frontend)
+
+---
+
+## 🐳 Run with Docker (recommended)
+
+### ✅ Prerequisites
+
+Make sure you have installed:
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+### ⚙️ Setup
+
+1. **Clone the repository:**
+   ```bash
+   
+   git clone https://github.com/PatrykkM/invoices-app.git
+   
+   cd invoices-app
+   ```
+
+2. **Build and start containers:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Check if everything is running:**
+   ```bash
+   docker compose ps
+   ```
+
+4. **Open the app:**
+   - Frontend → [http://localhost:3000](http://localhost:3000)
+   - Backend API → [http://localhost:8080](http://localhost:8080)
+
+If everything goes well, you should see the frontend UI running and connected to the API.
+
+## 💻 Run locally (without Docker)
+
+If Docker setup doesn’t work, you can run the app manually.
+
+### 🧩 Requirements
+
+- Node.js 20+
+- Yarn
+- Java 21
+- PostgreSQL 16+
+
+---
+
+### 1️⃣ Start PostgreSQL locally
+
+Create a database:
+```sql
+CREATE DATABASE invoice_db;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Update your backend `application.properties` (if needed):
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/invoice_db
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2️⃣ Run the backend
 
-## Learn More
+Backend available at: [http://localhost:8080](http://localhost:8080)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3️⃣ Run the frontend
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd frontend
+yarn install
+yarn dev
+```
 
-## Deploy on Vercel
+Frontend available at: [http://localhost:3000](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Made with ❤️ by **Patryk Mrzygłód**
