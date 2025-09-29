@@ -34,6 +34,8 @@ dependencies {
 	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	implementation "org.postgresql:postgresql"
+	testRuntimeOnly "com.h2database:h2"
 }
 
 tasks.named('test') {

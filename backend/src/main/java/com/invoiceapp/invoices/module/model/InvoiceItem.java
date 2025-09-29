@@ -19,9 +19,9 @@ public class InvoiceItem {
     @Column(nullable=false)
     private String description;
 
-    @Column(nullable=false, precision=14, scale=2)
-    private BigDecimal quantity;
+    @Column(nullable=false)
+    private int quantity;
 
-    @Column(nullable = false)
-    private int netPrice;
+    @Column(nullable=false, precision=14, scale=2)
+    private BigDecimal netPrice;
 }
