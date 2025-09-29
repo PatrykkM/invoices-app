@@ -55,6 +55,18 @@ Make sure you have installed:
 
    You can use the test.json file located in the frontend folder to load data for generating an invoice.
 
+6. **Troubleshooting:**
+
+Sometimes on macOS or Linux you might encounter a “Permission denied” error during the Docker build.
+This happens because the gradlew file needs execution permissions inside the container.
+To fix it, run this command in your terminal from the root directory of the project:
+
+```bash
+ chmod +x backend/gradlew
+```
+
+![Invoice App Screenshot](./assets/image.png)
+
 ## 💻 Run locally (without Docker)
 
 If Docker setup doesn’t work, you can run the app manually.
