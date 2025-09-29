@@ -25,7 +25,7 @@ export function DialogPreviewInvoice({ open, onOpenChange, invoice }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="max-h-[80vh] overflow-y-scroll sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>{`${invoice.invoiceNumber}`}</DialogTitle>
         </DialogHeader>

@@ -186,6 +186,7 @@ export function InvoiceForm({
                           }}
                           customInput={Input}
                           className="border-base300"
+                          placeholder="1"
                         />
                       </FormControl>
                       <FormMessage />
@@ -214,6 +215,7 @@ export function InvoiceForm({
                           }}
                           customInput={Input}
                           className="border-base300"
+                          placeholder="1"
                         />
                       </FormControl>
                       <FormMessage />
