@@ -51,7 +51,8 @@ Make sure you have installed:
 
    If everything goes well, you should see the frontend UI running and connected to the API.
 
-5. **Test the json import**
+5. **Test the json import:**
+
    You can use the test.json file located in the frontend folder to load data for generating an invoice.
 
 ## 💻 Run locally (without Docker)
