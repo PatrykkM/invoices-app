@@ -8,8 +8,8 @@ The app allows you to manage invoices, through a clean UI and a RESTful backend.
 - **Frontend:** Next.js (React + TypeScript,tailwindcss, Yarn)
 - **Backend:** Spring Boot (Java 21)
 - **Database:** PostgreSQL
-- **Testing:** Spring Boot Test (JUnit & MockMvc)
-- **Containerization:** Docker & Docker Compose (backend), Jest (frontend)
+- **Testing:** Spring Boot Test JUnit & MockMvc (backend), Jest (frontend)
+- **Containerization:** Docker & Docker Compose
 
 ---
 
