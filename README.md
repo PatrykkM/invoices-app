@@ -94,4 +94,4 @@ Frontend available at: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-Made with ❤️ by **Patryk**
+Made with ❤️ by **Patryk Mrzygłód**
