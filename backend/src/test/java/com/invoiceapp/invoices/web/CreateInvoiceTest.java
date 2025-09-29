@@ -1,5 +1,7 @@
 package com.invoiceapp.invoices.web;
 
+import com.invoiceapp.common.GlobalExceptionHandler;
+import com.invoiceapp.invoices.api.app.BusinessException;
 import com.invoiceapp.invoices.api.app.InvoicesService;
 import com.invoiceapp.invoices.api.web.InvoicesController;
 import com.invoiceapp.invoices.api.web.InvoicesMapper;
@@ -9,13 +11,11 @@ import com.invoiceapp.invoices.module.model.InvoiceEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -24,16 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(InvoicesController.class)
-class CreateInvoiceValidationTest  extends BaseInvoicesWebTest {
 
-    @Autowired
-    MockMvc mvc;
+@Import(GlobalExceptionHandler.class)
+class CreateInvoiceValidationTest  extends BaseInvoicesWebTest {
 
     @MockitoBean
     InvoicesService service;
@@ -74,7 +72,7 @@ class CreateInvoiceValidationTest  extends BaseInvoicesWebTest {
 
     @ParameterizedTest(name = "{index} -> {0}")
     @MethodSource("com.invoiceapp.invoices.web.BaseInvoicesWebTest#invalidBodies")
-    @DisplayName("POST /api/invoices → 400 for invalid body")
+    @DisplayName("POST /api/invoices -> 400 for invalid body")
     void shouldReturn400ForInvalidBody(String _case, String json) throws Exception {
         mvc.perform(post("/api/invoices")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -84,4 +82,23 @@ class CreateInvoiceValidationTest  extends BaseInvoicesWebTest {
 
         verifyNoInteractions(service);
     }
+
+    @Test
+    @DisplayName("POST /api/invoices -> 415 when wrong content-type")
+    void shouldReturn415_whenUnsupportedMediaType() throws Exception {
+        expectUnsupportedMediaType("POST", "/api/invoices");
+    }
+
+    @Test
+    @DisplayName("POST /api/invoices → 400 when business exception (dueDate < issueDate)")
+    void shouldReturn400_whenBusinessRuleFails_onPost() throws Exception {
+        given(service.createInvoice(any()))
+                .willThrow(new BusinessException("Due date cannot be before issue date"));
+
+        expectBusiness400("POST", "/api/invoices", validCreateDto(),
+                "Due date cannot be before issue date");
+
+        verifyNoInteractions(mapper);
+    }
+
 }

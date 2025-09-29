@@ -1,5 +1,7 @@
 package com.invoiceapp.invoices.web;
 
+import com.invoiceapp.common.GlobalExceptionHandler;
+import com.invoiceapp.invoices.api.app.BusinessException;
 import com.invoiceapp.invoices.api.app.InvoicesService;
 import com.invoiceapp.invoices.api.web.InvoicesController;
 import com.invoiceapp.invoices.api.web.InvoicesMapper;
@@ -9,11 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -26,10 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(InvoicesController.class)
+@Import(GlobalExceptionHandler.class)
 class UpdateInvoiceValidationTest extends BaseInvoicesWebTest {
-
-    @Autowired
-    MockMvc mvc;
 
     @MockitoBean
     InvoicesService service;
@@ -38,7 +37,7 @@ class UpdateInvoiceValidationTest extends BaseInvoicesWebTest {
     InvoicesMapper mapper;
 
     @Test
-    @DisplayName("should update invoice and return 200 OK")
+    @DisplayName("Should update invoice and return 200 OK")
     void shouldUpdateInvoice_andReturn200() throws Exception {
         var reqJson = asJson(validCreateDto());
         var id = UUID.randomUUID();
@@ -68,7 +67,7 @@ class UpdateInvoiceValidationTest extends BaseInvoicesWebTest {
         verify(service).updateInvoice(any(), any());
     }
 
-    @ParameterizedTest(name = "{index} ⇒ {0}")
+    @ParameterizedTest(name = "{index} -> {0}")
     @MethodSource("com.invoiceapp.invoices.web.BaseInvoicesWebTest#invalidBodies")
     @DisplayName("Should return 400 for invalid update body")
     void shouldReturn400ForInvalidUpdateBody(String _case, String json) throws Exception {
@@ -109,5 +108,26 @@ class UpdateInvoiceValidationTest extends BaseInvoicesWebTest {
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(service);
+    }
+
+    @Test
+    @DisplayName("PUT /api/invoices/{id} -> 415 when wrong Content-Type")
+    void shouldReturn415_whenUnsupportedMediaType_put() throws Exception {
+        var id = UUID.randomUUID();
+        expectUnsupportedMediaType("PUT", "/api/invoices/" + id);
+    }
+
+    @Test
+    @DisplayName("PUT /api/invoices/{id} → 400 when business exception (dueDate < issueDate)")
+    void shouldReturn400_whenBusinessRuleFails_onPut() throws Exception {
+        var id = UUID.randomUUID();
+
+        given(service.updateInvoice(any(), any()))
+                .willThrow(new BusinessException("Due date cannot be before issue date"));
+
+        expectBusiness400("PUT", "/api/invoices/" + id, validCreateDto(),
+                "Due date cannot be before issue date");
+
+        verifyNoInteractions(mapper);
     }
 }
