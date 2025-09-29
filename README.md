@@ -65,7 +65,7 @@ To fix it, run this command in your terminal from the root directory of the proj
  chmod +x backend/gradlew
 ```
 
-![Invoice App Screenshot](./permisionDeniedError/permisionDeniedError.png)
+![Invoice App Screenshot](./githubAssets/permisionDeniedError.png)
 
 ## 💻 Run locally (without Docker)
 
