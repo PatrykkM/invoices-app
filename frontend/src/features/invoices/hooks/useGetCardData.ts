@@ -12,7 +12,9 @@ export const useGetCardData = ({
   const totalInvoices = data?.length ?? 0;
 
   const netRevenue = netTotal;
-  const averageInvoiceCost = totalInvoices > 0 ? grossTotal / totalInvoices : 0;
+  const averageInvoiceCost = (
+    totalInvoices > 0 ? grossTotal / totalInvoices : 0
+  ).toFixed(2);
 
   const grossRevenue = grossTotal;
 

@@ -60,7 +60,6 @@ export function InvoiceForm({
     } else {
       createInvoice(data);
     }
-    router.push("/invoices");
   };
 
   return (

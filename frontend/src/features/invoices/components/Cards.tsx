@@ -5,7 +5,7 @@ import { useGetCardData } from "../hooks/useGetCardData";
 
 interface CardData {
   label: string;
-  value: number;
+  value: number | string;
   color: string;
 }
 
