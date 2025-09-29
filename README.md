@@ -1,7 +1,6 @@
 # Invoice App 🧾
 
-A fullstack invoice management application built in few days with **Next.js**, **Spring Boot (Java 21)**, and **PostgreSQL**.
-
+A fullstack invoice management system built in a short timeframe to showcase end-to-end development with Next.js, Spring Boot, and PostgreSQL.
 The app allows you to manage invoices, through a clean UI and a RESTful backend.
 
 ## 🚀 Tech Stack
@@ -9,7 +8,8 @@ The app allows you to manage invoices, through a clean UI and a RESTful backend.
 - **Frontend:** Next.js (React + TypeScript,tailwindcss, Yarn)
 - **Backend:** Spring Boot (Java 21)
 - **Database:** PostgreSQL
-- **Containerization:** Docker & Docker Compose
+- **Testing:** Spring Boot Test (JUnit & MockMvc)
+- **Containerization:** Docker & Docker Compose (backend), Jest (frontend)
 
 ---
 
