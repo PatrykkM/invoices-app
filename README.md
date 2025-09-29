@@ -104,4 +104,12 @@ Frontend available at: [http://localhost:3000](http://localhost:3000)
 
 ---
 
+### 5️⃣ Test the JSON import
+
+In the frontend folder you have test.json from which you can get data to create an invoice.
+
+)
+
+---
+
 Made with ❤️ by **Patryk Mrzygłód**
