@@ -18,25 +18,28 @@ The app allows you to manage invoices, through a clean UI and a RESTful backend.
 ### ✅ Prerequisites
 
 Make sure you have installed:
+
 - [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
 
 ### ⚙️ Setup
 
 1. **Clone the repository:**
+
    ```bash
-   
+
    git clone https://github.com/PatrykkM/invoices-app.git
-   
+
    cd invoices-app
    ```
 
 2. **Build and start containers:**
+
    ```bash
    docker compose up -d --build
    ```
 
 3. **Check if everything is running:**
+
    ```bash
    docker compose ps
    ```
@@ -63,11 +66,13 @@ If Docker setup doesn’t work, you can run the app manually.
 ### 1️⃣ Start PostgreSQL locally
 
 Create a database:
+
 ```sql
 CREATE DATABASE invoice_db;
 ```
 
 Update your backend `application.properties` (if needed):
+
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/invoice_db
 spring.datasource.username=postgres
